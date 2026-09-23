@@ -1,9 +1,19 @@
-from flask import Flask, render_template, request, jsonify
+import os
 import pickle
 import numpy as np
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
-model = pickle.load(open(r"D:\Edu\4th year\ML-Ops\AQI\models\AQI_model.pkl", "rb"))
+
+# Dynamically locate the model file across different environments/OS
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "..", "models", "AQI_model.pkl")
+if not os.path.exists(MODEL_PATH):
+    MODEL_PATH = os.path.join(BASE_DIR, "models", "AQI_model.pkl")
+
+with open(MODEL_PATH, "rb") as f:
+    model = pickle.load(f)
+
 
 @app.route("/")
 def home():
